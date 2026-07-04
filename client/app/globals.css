@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+<<<<<<< HEAD
+=======
+  --color-main: #F99A00;
+>>>>>>> cf3b11d5cb90159e77b6c90d258af79dd5f90d57
 }
 
 @theme inline {
@@ -10,6 +14,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+<<<<<<< HEAD
+=======
+  --color-main: var(--color-main);
+>>>>>>> cf3b11d5cb90159e77b6c90d258af79dd5f90d57
 }
 
 @media (prefers-color-scheme: dark) {
