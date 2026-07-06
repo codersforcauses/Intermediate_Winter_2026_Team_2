@@ -1,17 +1,42 @@
 @import "tailwindcss";
 
+/* Defines custom CSS properties that can be used anywhere in the CSS */
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --color-main: #F99A00;
+  --color-secondary-dark: #F57700;
+  --color-input-gray: #D9D9D9;
 }
 
+/* 
+Change things like: 
+- color palette, 
+- spacing scale, 
+- typography scale, or 
+- breakpoints 
+
+@theme inline exposes custom theme values to Tailwind utilities
+*/
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-main: var(--color-main);
+  --color-secondary-dark: var(--color-secondary-dark);
+  --color-input-gray: var(--color-input-gray);
+}
+
+/* Customize default base styles for specific HTML elements */
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
