@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
+/* Defines custom CSS properties that can be used anywhere in the CSS */
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --color-main: #F99A00;
-  --color-main-dark: #F57700;
 }
 
 @theme inline {
@@ -13,7 +13,6 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-main: var(--color-main);
-  --color-main-dark: var(--color-main-dark);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -4,6 +4,6 @@ export default function SignupLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="min-h-screen">{children}</main>
+    <main className="flex min-h-screen">{children}</main>
   )
 }
