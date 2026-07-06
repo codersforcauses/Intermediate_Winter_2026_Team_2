@@ -1,25 +1,27 @@
-type ButtonProps = {
-    children: React.ReactNode;
-    type?: "button" | "submit" | "reset"; // commonly used button types
-    variant?: "primary" | "secondary";
-    onClick?: () => void;
-}
+// This component behaves exactly like a normal HTML label
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: "primary" | "secondary";
+};
 
 export default function Button({
-    children, 
-    type = "button",
-    variant = "primary", 
-    onClick,
+  className = "",
+  variant = "primary",
+  children,
+  ...props
 }: ButtonProps) {
-    const styles = "px-4 py-2 rounded-md font-medium transition-all"
-    const variants = {
-        primary: "bg-main text-white",
-        secondary: "bg-white text-main",
-    };
+  // May edit depending on desired button style
+  const baseStyle = "px-4 py-2 rounded-xl transition-all";
+  const variants = {
+    primary: "bg-main text-white hover:shadow-gray-400 hover:shadow-md hover:bg-secondary-dark hover:cursor-pointer",
+    secondary: "bg-white text-main",
+  };
 
-    return (
-        <button type={type} onClick={onClick} className={`${styles} ${variants[variant]}`}>
-            {children}
-        </button>
-    );
+  return (
+    <button
+      className={`${baseStyle} ${variants[variant]} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
 }
