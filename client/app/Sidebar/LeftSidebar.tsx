@@ -39,7 +39,7 @@ export default function LeftSidebar({
 
     return (
         /* Uses aside for left column and stack <vertically*/
-        <aside className="flex h-screen w-56 flex-col items-center border-r border-main-light/30 bg-white py-8 px-4">
+        <aside className="flex h-screen w-56 flex-col items-center border-r-2 border-main/20 bg-white py-8 px-4">
             {/*Logo*/}
             <div className="flex flex-col items-center gap-1 mb-8">
                 <span className="text-lg font-bold text-main">
