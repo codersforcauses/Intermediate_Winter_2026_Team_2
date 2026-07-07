@@ -1,4 +1,4 @@
-import LeftSidebar from "@/Sidebar/LeftSidebar";
+import LeftSidebar from "@/components/layout/LeftSidebar";
 
 export default function WebAppLayout({
   children,
