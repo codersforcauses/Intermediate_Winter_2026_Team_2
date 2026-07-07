@@ -36,7 +36,7 @@ class Ingredient(models.Model):
     
 class Recipe(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipes")
     title = models.CharField(max_length=255, null=False)
     description = models.TextField(null=False)
     prep_time_minutes = models.IntegerField(null=False) # store as minutes in database
@@ -62,8 +62,8 @@ class Recipe(models.Model):
         return self.title
     
 class RecipeIngredient(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="ingredients_list")
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name="recipe")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="recipe_ingredients")
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name="recipe_ingredients")
     amount = models.CharField(max_length=50)
     description = models.CharField(max_length=100, blank=True, default="") # optional, extra info
 
