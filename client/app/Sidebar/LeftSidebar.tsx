@@ -62,7 +62,7 @@ export default function LeftSidebar({
                     /* Check condition so if user don't show lock icon and vice versa*/
                     return (
                         <Link key={label} href={isLocked ? "/signup" : href} className={`relative flex items-center justify-center gap-2 rounded-full py-2.5 text-sm 
-                        font-medium text-white transition-colors ${isActive ? "bg-main-dark" : "bg-main hover:bg-main-dark"}`}>
+                        font-medium text-white transition-colors ${isActive ? "bg-secondary-dark" : "bg-main hover:bg-secondary-dark"}`}>
                         <Icon className="h-5 w-5" />
                         
                         {label}
@@ -76,11 +76,11 @@ export default function LeftSidebar({
                 {user.isGuest ? (
                     /*if Guest then shows Sign up link, Login link*/
                     <div className="flex w-full flex-col items-center gap-3 mt-6">
-                        <Link href="/signup" className="w-full rounded-full bg-main py-2.5 text-center text-sm font-medium text-white hover:bg-main-dark">
+                        <Link href="/signup" className="w-full rounded-full bg-main py-2.5 text-center text-sm font-medium text-white hover:bg-secondary-dark">
                             Sign up
                         </Link>
 
-                        <Link href="/login" className="w-full rounded-full bg-main py-2.5 text-center text-sm font-medium text-white hover:bg-main-dark">
+                        <Link href="/login" className="w-full rounded-full bg-main py-2.5 text-center text-sm font-medium text-white hover:bg-secondary-dark">
                             Login
                         </Link>
 
@@ -95,7 +95,7 @@ export default function LeftSidebar({
                             Signed in as {user.name}
                         </div>
                         
-                        <button onClick={onLogout} className="rounded-full bg-main py-2.5 text-center text-sm font-medium text-white hover:bg-main-dark">
+                        <button onClick={onLogout} className="rounded-full bg-main py-2.5 text-center text-sm font-medium text-white hover:bg-secondary-dark">
                             Logout
                         </button>
                     </div>
