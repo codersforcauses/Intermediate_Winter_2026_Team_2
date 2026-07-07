@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
-import { error } from "console";
 
 type SignUpFormData = {
   username: string;

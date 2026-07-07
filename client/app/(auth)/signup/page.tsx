@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import SignUpForm from "@/auth/signup/SignUpForm";
+import SignUpForm from "@/(auth)/signup/SignUpForm";
 
 export default function SignUpPage() {
   return (
