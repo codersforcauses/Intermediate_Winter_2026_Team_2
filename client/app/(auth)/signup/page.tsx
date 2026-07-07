@@ -32,7 +32,7 @@ export default function SignUpPage() {
           <footer>
             <h2 className="my-2 flex justify-center items-center text-center">
               Already have an account?&nbsp; 
-              <Link href={"/auth/login"} className="text-main hover:text-secondary-dark hover:font-bold hover:underline">Login</Link>
+              <Link href={"/login"} className="text-main hover:text-secondary-dark hover:font-bold hover:underline">Login</Link>
             </h2>
           </footer>
         </div>
