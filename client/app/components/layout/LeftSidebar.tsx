@@ -50,7 +50,7 @@ export default function LeftSidebar({
       </div>
 
       {/*Creating one link for each navItems (an object) with mapping */}
-      <nav className="flex w-full flex-1 flex-col gap-3">
+      <nav className="flex w-full flex-1 flex-col justify-center gap-3">
         {navItems.map(({ label, href, icon: Icon, guestAllowed }) => {
           /*Checks if user nextpath==currentpath->stay on same page*/
           const isActive = pathname === href;
@@ -58,19 +58,29 @@ export default function LeftSidebar({
 
           /* Check condition so if user don't show lock icon and vice versa*/
           return (
-            <Link
+            <div
               key={label}
-              href={isLocked ? "/signup" : href}
-              className={`relative flex items-center justify-center gap-2 rounded-full py-2.5 text-sm 
-                        font-medium text-white transition-colors ${isActive ? "bg-secondary-dark" : "bg-main hover:bg-secondary-dark"}`}
+              className="flex flex-col"
             >
-              <Icon className="h-5 w-5" />
+              <Link
+                href={isLocked ? "/signup" : href}
+                className={`relative flex items-center h-11 min-w-40 justify-center gap-2 rounded-full px-4 py-2.5 text-sm
+                          font-medium text-white whitespace-nowrap transition-colors 
+                          ${isActive ? "bg-secondary-dark" : "bg-main hover:bg-secondary-dark"}
+                          ${isLocked ? "pr-8" : "pr-4"}`}
+              >
+                {/* Icon and Page Label */}
+                <span className="flex items-center gap-2">
+                  <Icon className="h-5 w-5 shrink-0" />
+                  <span>{label}</span>
+                </span>
 
-              {label}
-              {isLocked && (
-                <Lock className="absolute right-3 h-3.5 w-3.5 text-white/90" />
-              )}
-            </Link>
+                {/* Lock */}
+                {isLocked && (
+                    <Lock className="absolute right-3 h-3.5 w-3.5 text-white/90" />
+                )}
+              </Link>
+            </div>
           );
         })}
       </nav>
