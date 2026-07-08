@@ -16,8 +16,6 @@ export default function LoginForm() {
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
 
   // Handle input change (state update)
   const handleChange = (e: React.ChangeEvent  <HTMLFormElement>) => {
