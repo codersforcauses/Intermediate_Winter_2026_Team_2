@@ -18,12 +18,28 @@ class RecipeStepSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
+    # Nests the ingredient objects (better/richer info given)
+    ingredient = IngredientSerializer(read_only=True)
+    ingredient_id = serializers.PrimaryKeyRelatedField(
+        source="ingredient",
+        queryset=Ingredient.objects.all(),
+        write_only=True
+    )
+    recipe_title = serializers.ReadOnlyField(source="recipe.title")
+
     class Meta:
         model = RecipeIngredient
-        fields = "__all__"
+        fields = [
+            'recipe',
+            'recipe_title',
+            'ingredient',
+            'ingredient_id',
+            'amount',
+            'description'
+        ]
 
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = RecipeIngredientSerializer(many=True, read_only=True)
+    ingredients = RecipeIngredientSerializer(source='recipe_ingredients', many=True, read_only=True)
     class Meta:
         model = Recipe
         fields = "__all__"
