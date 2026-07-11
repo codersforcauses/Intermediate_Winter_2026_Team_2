@@ -6,7 +6,10 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
 import Form from "@/components/layout/Form";
-import { EventHandler, InputEvent, useState } from "react";
+import {
+  ChangeEvent,
+  useState,
+} from "react";
 
 export default function LoginForm() {
   // useState(initialState) returns array w/ exactly two values:
@@ -16,9 +19,13 @@ export default function LoginForm() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  })
 
   // Handle input change (state update)
-  const handleChange = (e: React.ChangeEvent  <HTMLFormElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     // setSomething(nextState)
@@ -26,7 +33,7 @@ export default function LoginForm() {
     // Updating object formFata in state by replace whe obj
     // In this case, nextState is an updater function (takes pending state and returns the next state)
     setFormData((prevData) => ({
-      ...formData, // copies object and its existing data (old fields)
+      ...prevData, // copies object and its existing data (old fields)
       [name]: value, // override this specific field
     }));
   };
@@ -34,6 +41,18 @@ export default function LoginForm() {
   // Processes form data
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const nextErrors = {
+        email: "",
+        password: "",
+    }
+
+    // Validation
+    if (!formData.email) nextErrors.email = "Email is required";
+    if (!formData.password) nextErrors.password = "Password is required";
+
+    setErrors(nextErrors);
+
+    if (nextErrors.email || nextErrors.password) return;
 
     try {
       const response = await fetch("api/login", {
@@ -50,7 +69,7 @@ export default function LoginForm() {
         throw new Error(`Signup failed: HTTP Error ${response.status}`);
       }
 
-    //   const data = await response.json();
+      //   const data = await response.json();
 
       // Temporary success message
       alert("Signup successful!");
@@ -61,18 +80,33 @@ export default function LoginForm() {
   };
 
   return (
-    <Form
-        onSubmit={handleSubmit}  
-    >
+    <Form onSubmit={handleSubmit}>
+      <Label htmlFor="email">Email</Label>
+      <Input
+        id="email"
+        name="email"
+        type="email"
+        placeholder="food123@email.com"
+        value={formData.email}
+        onChange={handleChange}
+      />
 
-        <Label>Email</Label>
-        <Input/>
+      <Label htmlFor="password">Password</Label>
+      <Input
+        id="password"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
+      />
 
-        <Label>Password</Label>
-        <Input/>
-
-        <Button type="submit" variant="primary" className="my-10 ease-in-out transition-all hover:font-bold">Login</Button>
-
+      <Button
+        type="submit"
+        variant="primary"
+        className="my-10 ease-in-out transition-all hover:font-bold"
+      >
+        Login
+      </Button>
     </Form>
-  )
+  );
 }
