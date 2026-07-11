@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
+import Form from "@/components/layout/Form";
 
 type SignUpFormData = {
   username: string;
@@ -54,9 +55,8 @@ export default function SignUpForm() {
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col space-y-2"
     >
       <Label htmlFor="username">Username</Label>
       <Input
@@ -116,6 +116,6 @@ export default function SignUpForm() {
       <Button type="submit" variant="primary" className="my-10 ease-in-out transition-all hover:font-bold">
         Sign Up
       </Button>
-    </form>
+    </Form>
   );
 }
