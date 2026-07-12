@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import IngredientViewSet, RecipeStepViewSet, RecipeIngredientViewSet, RecipeViewSet
+from .views import SignupView, IngredientViewSet, RecipeStepViewSet, RecipeIngredientViewSet, RecipeViewSet
 
 router = DefaultRouter()
 router.register(r'ingredients', IngredientViewSet, basename='ingredients')
@@ -9,6 +9,7 @@ router.register(r'recipe_ingredient', RecipeIngredientViewSet, basename='recipe_
 router.register(r'recipe', RecipeViewSet, basename='recipe')
 
 urlpatterns = [
+    path('signup/', SignupView.as_view(), name='signup'),
     path('', include(router.urls)),
 
     # Manual endpoints
