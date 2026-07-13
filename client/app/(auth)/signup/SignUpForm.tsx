@@ -23,28 +23,40 @@ export default function SignUpForm() {
   const {
     register, // connects input to the form system
     handleSubmit, // wraps submit function to give form `data.<input-key>`
+    watch, // read other field values (needed to compare passwords)
     formState: { errors }, // auto stores validation `errors.<input-key>?.message`
   } = useForm<SignUpFormData>();
 
   // Submit function (api/route hanlder)
   async function onSubmit(input: SignUpFormData) {
     try {
-      const response = await fetch("api/signup", {
+      // go to Django backend
+      const response = await fetch("http://127.0.0.1:8000/api/signup/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(input),
+        body: JSON.stringify({
+          username: input.username,
+          email: input.email,
+          password: input.password,
+          verify_pass: input.verifyPassword,
+        }),
       });
 
       // Check for HTTP Errors
       if (!response.ok) {
-        // Temporary error message
-        alert(`Signup failed: HTTP Error ${response.status}`);
+        // JSON Error message from backend
+        const errorData = await response.json();
+        alert(`Signup failed: ${JSON.stringify(errorData)}`);
         return;
       }
 
       const data = await response.json();
+
+      // Store JWT token to remember user's record of logged in
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
 
       // Temporary success message
       alert("Signup successful!");
@@ -110,9 +122,14 @@ export default function SignUpForm() {
         type="password"
         {...register("verifyPassword", {
           required: "Verification of password is required",
+          // compare between second password (verifyPassword) and first password (password)
+          validate: (value) =>
+            value === watch("password") || "Passwords do not match",
         })}
       />
 
+      {errors.verifyPassword && <p>{errors.verifyPassword.message}</p>}
+      
       <Button type="submit" variant="primary" className="my-10 ease-in-out transition-all hover:font-bold">
         Sign Up
       </Button>
