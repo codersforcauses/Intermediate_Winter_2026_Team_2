@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'project',
+    'project', # App name
     'djfractions',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders', # Allowing Django to receive request from Next.js
 ]
 
 MIDDLEWARE = [
@@ -51,6 +53,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", # The port that Next.js runs on
 ]
 
 ROOT_URLCONF = 'api.urls'
