@@ -12,21 +12,30 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&%#b8v+7196y(@3-p+_95vi(^x1@e)+@n9k)pw=!#(kss6ryi0'
+# Falls back to the original dev-only key so local setup keeps working with
+# no .env file. Production MUST set a real SECRET_KEY via server/.env.
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-&%#b8v+7196y(@3-p+_95vi(^x1@e)+@n9k)pw=!#(kss6ryi0',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Defaults to True for local dev; set DEBUG=False in server/.env for production.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -42,6 +51,7 @@ INSTALLED_APPS = [
     'djfractions',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders', # Allowing Django to receive request from Next.js
 ]
 
@@ -56,9 +66,9 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", # The port that Next.js runs on
-]
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'CORS_ALLOWED_ORIGINS', 'http://localhost:3000'
+).split(',')
 
 ROOT_URLCONF = 'api.urls'
 
@@ -127,12 +137,27 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (user-uploaded recipe images)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Django REST framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    # DjangoModelPermissions requires per-model Django auth permissions that
+    # regular signed-up users never have; IsAuthenticatedOrReadOnly is the
+    # sane default for a public-read, auth-to-write API like this one.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
     ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "20/min",
+        "user": "60/min",
+    },
 }

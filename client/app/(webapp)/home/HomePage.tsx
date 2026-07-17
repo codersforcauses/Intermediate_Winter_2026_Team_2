@@ -32,7 +32,11 @@ const features = [
     },
 ];
 
-export default function HomePage() {
+export default function HomePage({ isGuest }: { isGuest: boolean }) {
+    const visibleFeatures = isGuest
+        ? features.filter((feature) => feature.guestAllowed)
+        : features;
+
     return (
         <div className="flex flex-col items-center py-12 px-4">
             <h1 className="text-2xl font-bold mb-2">Welcome to BrokeMeal!</h1>
@@ -42,7 +46,7 @@ export default function HomePage() {
             </p>
 
         <div className="grid grid-cols-2 gap-6 max-w-3xl w-full">
-            {features.map((feature) => (
+            {visibleFeatures.map((feature) => (
                 <div key={feature.title} className="border border-main rounded-lg p-6 flex flex-col">
                     <feature.icon className="text-lg" size={28} />
 

@@ -2,16 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import RecipeCard, { Recipe } from "@/components/recipe/RecipeCard";
 
 type SavedRecipe = {
     id: number;
-    recipe: {
-        id: string;
-        title: string;
-        description: string;
-        prep_time_display: string;
-        serving_size: number;
-    };
+    recipe: Recipe;
 };
 
 export default function SavedPage() {
@@ -42,12 +37,9 @@ export default function SavedPage() {
     }
 
     return (
-        <div className="grid grid-cols-2 gap-6 w-full max-w-4xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl">
             {saved.map(({ id, recipe }) => (
-                <div key={id} className="border border-main rounded-lg p-4">
-                    <h3 className="font-semibold text-main">{recipe.title}</h3>
-                    <p className="text-sm text-foreground/70">{recipe.description}</p>
-                </div>
+                <RecipeCard key={id} recipe={recipe} initialSaved={true} isGuest={false} />
             ))}
         </div>
     );

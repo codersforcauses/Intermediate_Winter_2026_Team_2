@@ -48,13 +48,15 @@ export default function LoginPage() {
             </Link>
           </h2>
           <h2>OR</h2>
-          <Button
-            type="button"
-            variant="primary"
-            className="w-full my-4 ease-in-out transition-all hover:font-bold"
-          >
-            Browse as guest
-          </Button>
+          <Link href="/home" className="w-full">
+            <Button
+              type="button"
+              variant="primary"
+              className="w-full my-4 ease-in-out transition-all hover:font-bold"
+            >
+              Browse as guest
+            </Button>
+          </Link>
           <h2>View others&apos; recipes, no account needed</h2>
         </footer>
       </div>

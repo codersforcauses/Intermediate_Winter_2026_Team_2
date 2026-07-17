@@ -2,18 +2,27 @@
 
 import { Heart } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SaveHeartButton({
     recipeId,
     initialSaved,
+    isGuest = false,
 }: {
     recipeId: string;
     initialSaved: boolean;
+    isGuest?: boolean;
 }) {
+    const router = useRouter();
     const [saved, setSaved] = useState(initialSaved);
     const [loading, setLoading] = useState(false);
 
     const toggle = async () => {
+        if (isGuest) {
+            router.push("/signup");
+            return;
+        }
+
         setLoading(true);
         try {
             const res = await fetch("/api/saved-recipes/toggle", {

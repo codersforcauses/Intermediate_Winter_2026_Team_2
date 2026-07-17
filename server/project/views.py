@@ -4,7 +4,6 @@
 # Recommend using class-based views (ViewSet) for most use cases
 #  -- more concise and easier to extend if you are always using the same pattern of accessing the database
 
-from django.shortcuts import render
 from django.contrib.auth import get_user_model
 # Create your views here.
 from rest_framework import generics, viewsets, permissions
@@ -51,6 +50,14 @@ class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def get_permissions(self):
+        # Ingredients are a shared taxonomy with no owner — any signed-in
+        # user may look up/create them (needed by recipe creation), but
+        # editing/deleting an existing one is restricted to staff.
+        if self.action in ("update", "partial_update", "destroy"):
+            return [permissions.IsAdminUser()]
+        return super().get_permissions()
+
 class RecipeStepViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeStepSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -63,7 +70,7 @@ class RecipeStepViewSet(viewsets.ModelViewSet):
 
 class RecipeIngredientViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeIngredientSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get_queryset(self):
         recipe_id = self.kwargs.get('recipe_id') # get recipe_id from the URL
         if recipe_id:

@@ -5,6 +5,7 @@
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.db import transaction
 from rest_framework import serializers
 from .models import Ingredient, Recipe, RecipeIngredient, RecipeStep, SavedRecipe
 
@@ -75,16 +76,13 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientSerializer(source='recipe_ingredients', many=True, read_only=True)
+    created_by_username = serializers.ReadOnlyField(source="created_by.username")
+    prep_time_display = serializers.ReadOnlyField()
+
     class Meta:
         model = Recipe
         fields = "__all__"
         read_only_fields = ("id", "created_at")
-
-    def get_is_saved(self, obj):
-        request = self.context.get("request")
-        if not request or not request.user.is_authenticated:
-            return False
-        return obj.saved_by.filter(user=request.user).exists()
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = serializers.JSONField(write_only=True)
@@ -92,7 +90,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ["id", "title", "description", "prep_time_minutes", "serving_size", "ingredients", "steps"]
+        fields = ["id", "title", "description", "prep_time_minutes", "serving_size", "image", "ingredients", "steps"]
         read_only_fields = ["id"]
 
     def validate_ingredients(self, value):
@@ -103,6 +101,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Each ingredient needs a name.")
         return value
 
+    @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop("ingredients", [])
         steps_data = validated_data.pop("steps", [])

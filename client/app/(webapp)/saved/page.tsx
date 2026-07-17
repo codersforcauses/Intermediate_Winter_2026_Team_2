@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/auth";
-import SavedRecipesList from "@/components/SavedRecipesList";
+import SavedRecipesList from "./SavedPage";
 
 export default async function SavedPage() {
     const user = await getCurrentUser();
