@@ -1,9 +1,8 @@
-export default function HomePage() {
-    return (
-        <div>
-            <main>
-                <h1>Temporary Home Page</h1>
-            </main>
-        </div>
-    )
+// Route URL
+import HomePage from "./HomePage";
+
+export default function Home() {
+    return(
+         <HomePage/>
+    );
 }

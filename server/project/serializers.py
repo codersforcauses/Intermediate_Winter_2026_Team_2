@@ -6,7 +6,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import Ingredient, Recipe, RecipeIngredient, RecipeStep
+from .models import Ingredient, Recipe, RecipeIngredient, RecipeStep, SavedRecipe
 
 User = get_user_model() # returns current active User model 
 
@@ -79,3 +79,60 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = "__all__"
         read_only_fields = ("id", "created_at")
+
+    def get_is_saved(self, obj):
+        request = self.context.get("request")
+        if not request or not request.user.is_authenticated:
+            return False
+        return obj.saved_by.filter(user=request.user).exists()
+
+class RecipeCreateSerializer(serializers.ModelSerializer):
+    ingredients = serializers.JSONField(write_only=True)
+    steps = serializers.JSONField(write_only=True, required=False)
+
+    class Meta:
+        model = Recipe
+        fields = ["id", "title", "description", "prep_time_minutes", "serving_size", "ingredients", "steps"]
+        read_only_fields = ["id"]
+
+    def validate_ingredients(self, value):
+        if not value:
+            raise serializers.ValidationError("At least one ingredient is required.")
+        for item in value:
+            if not item.get("ingredient_name"):
+                raise serializers.ValidationError("Each ingredient needs a name.")
+        return value
+
+    def create(self, validated_data):
+        ingredients_data = validated_data.pop("ingredients", [])
+        steps_data = validated_data.pop("steps", [])
+        request = self.context["request"]
+
+        recipe = Recipe.objects.create(created_by=request.user, **validated_data)
+
+        for item in ingredients_data:
+            ingredient_obj, _ = Ingredient.objects.get_or_create(
+                name=item["ingredient_name"].strip().lower()
+            )
+            RecipeIngredient.objects.create(
+                recipe=recipe,
+                ingredient=ingredient_obj,
+                amount=item.get("amount", ""),
+                description=item.get("description", ""),
+            )
+
+        for idx, instruction in enumerate(steps_data, start=1):
+            if instruction.strip():
+                RecipeStep.objects.create(recipe=recipe, order=idx, instruction=instruction.strip())
+
+        return recipe
+    
+class SavedRecipeSerializer(serializers.ModelSerializer):
+    recipe = RecipeSerializer(read_only=True)
+    recipe_id = serializers.PrimaryKeyRelatedField(
+        source="recipe", queryset=Recipe.objects.all(), write_only=True
+    )
+
+    class Meta:
+        model = SavedRecipe
+        fields = ["id", "recipe", "recipe_id", "saved_at"]

@@ -4,7 +4,6 @@ import uuid
 from django.utils import timezone
 from djfractions.models import DecimalFractionField
 
-
 # Create your models here.
 
 # Enum options for Ingredients.units
@@ -81,3 +80,14 @@ class RecipeStep(models.Model):
     class Meta:
         ordering = ["order"]
         constraints = [models.UniqueConstraint(fields=["recipe", "order"], name="unique_recipe_order")]
+
+class SavedRecipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_recipes")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="saved_by")
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["user", "recipe"], name="unique_saved_recipe")]
+
+    def __str__(self):
+        return f"{self.user.username} saved {self.recipe.title}"

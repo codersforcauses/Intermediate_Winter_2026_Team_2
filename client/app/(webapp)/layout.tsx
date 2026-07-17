@@ -8,7 +8,8 @@ export default function WebAppLayout({
   return (
     <div className="flex">
       <LeftSidebar />
-      <main>{children}</main>
+      <main className="flex-1 w-full">{children}</main>
     </div>
   );
 }
+

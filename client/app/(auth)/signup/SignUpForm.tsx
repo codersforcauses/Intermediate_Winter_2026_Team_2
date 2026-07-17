@@ -6,6 +6,7 @@
 // useState = manual form handling, state updates everytime user types (good for small forms)
 // useForm = form library, updates when needed (better for larger forms)
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
@@ -19,6 +20,8 @@ type SignUpFormData = {
 };
 
 export default function SignUpForm() {
+  const router = useRouter();
+
   // useForm setup
   const {
     register, // connects input to the form system
@@ -30,8 +33,8 @@ export default function SignUpForm() {
   // Submit function (api/route hanlder)
   async function onSubmit(input: SignUpFormData) {
     try {
-      // go to Django backend
-      const response = await fetch("http://127.0.0.1:8000/api/signup/", {
+      // go through Next.js route handler (sets httpOnly auth cookies)
+      const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,14 +55,9 @@ export default function SignUpForm() {
         return;
       }
 
-      const data = await response.json();
-
-      // Store JWT token to remember user's record of logged in
-      localStorage.setItem("access", data.access);
-      localStorage.setItem("refresh", data.refresh);
-
-      // Temporary success message
-      alert("Signup successful!");
+      // Cookies are already set by the route handler — no need to read tokens here
+      router.push("/home");
+      router.refresh(); // re-check auth state for sidebar and gated pages
     } catch (error) {
       // Temporary error message
       alert(`${error}: Request cannot be completed`);
