@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
-from django.utils import timezone
-from djfractions.models import DecimalFractionField
-
 
 # Create your models here.
 
@@ -27,9 +24,9 @@ from djfractions.models import DecimalFractionField
 
 class Ingredient(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
-    name = models.CharField(max_length=255, null=False)
+    name = models.CharField(max_length=255, null=False, unique=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(default=timezone.now, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     def __str__(self):
         return self.name
@@ -41,9 +38,10 @@ class Recipe(models.Model):
     description = models.TextField(null=False)
     prep_time_minutes = models.IntegerField(null=False) # store as minutes in database
     serving_size = models.IntegerField(null=False)
+    image = models.ImageField(upload_to="recipes/", null=True, blank=True)
     ingredients = models.ManyToManyField(Ingredient, through="RecipeIngredient", related_name="recipes")
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(default=timezone.now, editable=False)
+    updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     # Display as hours and minutes
     @property
@@ -81,3 +79,14 @@ class RecipeStep(models.Model):
     class Meta:
         ordering = ["order"]
         constraints = [models.UniqueConstraint(fields=["recipe", "order"], name="unique_recipe_order")]
+
+class SavedRecipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_recipes")
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="saved_by")
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["user", "recipe"], name="unique_saved_recipe")]
+
+    def __str__(self):
+        return f"{self.user.username} saved {self.recipe.title}"

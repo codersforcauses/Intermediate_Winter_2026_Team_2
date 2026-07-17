@@ -2,7 +2,7 @@
 
 /* Uses client state (re-renders on browser) */
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 /*Uses icon library to have lock icon, bookmark, home*/
 import { Home, BookOpen, Bookmark, PlusCircle, Lock } from "lucide-react";
 
@@ -15,8 +15,6 @@ interface SidebarUser {
 /* Object for TypeScript, including waiting parents to pass function to child below*/
 interface SidebarObject {
   user?: SidebarUser;
-  onExitGuestMode?: () => void;
-  onLogout?: () => void;
 }
 
 /* Button for sidebar */
@@ -30,11 +28,20 @@ const navItems = [
 /* Default object call */
 export default function LeftSidebar({
   user = { name: "Guest", isGuest: true },
-  onExitGuestMode,
-  onLogout,
 }: SidebarObject) {
   /* Updates URL if user wants to go other page*/
   const pathname = usePathname();
+  const router = useRouter();
+
+  const onExitGuestMode = () => {
+    router.push("/login");
+  };
+
+  const onLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     /* Uses aside for left column and stack <vertically*/

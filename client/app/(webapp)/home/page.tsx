@@ -1,9 +1,10 @@
-export default function HomePage() {
-    return (
-        <div>
-            <main>
-                <h1>Temporary Home Page</h1>
-            </main>
-        </div>
-    )
+// Route URL
+import HomePage from "./HomePage";
+import { getCurrentUser } from "@/lib/auth";
+
+export default async function Home() {
+    const user = await getCurrentUser();
+    return(
+         <HomePage isGuest={!user} />
+    );
 }
